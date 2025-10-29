@@ -24,7 +24,7 @@ jobs:
     - name: Build project
       run: |
         cd frontend
-        npm run dev
+        npm run build
     
     - name: Build successful
       run: echo "Build completed!"
