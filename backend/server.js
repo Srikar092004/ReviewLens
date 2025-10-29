@@ -8,11 +8,12 @@ app.use(cors());
 app.use(express.json());
 
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'reviewlens_db'
+    host: process.env.DB_HOST || 'host.docker.internal',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || 'root',
+    database: process.env.DB_NAME || 'reviewlens_db'
 });
+
 
 db.connect((err) => {
     if (err) {
