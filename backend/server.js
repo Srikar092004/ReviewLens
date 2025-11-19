@@ -8,11 +8,13 @@ app.use(cors());
 app.use(express.json());
 
 const db = mysql.createConnection({
-    host: process.env.DB_HOST || 'host.docker.internal',
+    host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || 'root',
-    database: process.env.DB_NAME || 'reviewlens_db'
+    database: process.env.DB_NAME || 'reviewlens_db',
+    port: process.env.DB_PORT || 3305
 });
+
 
 
 db.connect((err) => {
@@ -23,7 +25,7 @@ db.connect((err) => {
     console.log('Connected to MySQL database');
 });
 
-// ============ AUTH ROUTES ============
+
 
 // Register new user
 app.post('/api/auth/register', (req, res) => {
@@ -57,7 +59,7 @@ app.post('/api/auth/login', (req, res) => {
     });
 });
 
-// ============ EXISTING ROUTES ============
+
 
 app.get('/api/products', (req, res) => {
     const sql = 'SELECT * FROM products';
@@ -112,7 +114,7 @@ app.get('/api/reviews', (req, res) => {
             return res.status(500).json({ error: err.message });
         }
         
-        // Ensure platform exists for all reviews
+      
         const processedResults = results.map(review => ({
             ...review,
             platform: review.platform || 'Amazon',
@@ -149,7 +151,7 @@ app.post('/api/reviews', (req, res) => {
 app.put('/api/reviews/:id', (req, res) => {
     const { reviewer_name, rating, review_text, user_id } = req.body;
     
-    // Check if user owns this review
+    
     const checkSql = 'SELECT user_id FROM reviews WHERE id = ?';
     db.query(checkSql, [req.params.id], (err, results) => {
         if (err) {
@@ -175,7 +177,7 @@ app.put('/api/reviews/:id', (req, res) => {
 app.delete('/api/reviews/:id', (req, res) => {
     const { user_id } = req.body;
     
-    // Check if user owns this review
+    
     const checkSql = 'SELECT user_id FROM reviews WHERE id = ?';
     db.query(checkSql, [req.params.id], (err, results) => {
         if (err) {
