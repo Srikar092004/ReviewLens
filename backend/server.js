@@ -1,31 +1,11 @@
 const express = require('express');
-const mysql = require('mysql2');
 const cors = require('cors');
+const db = require('./db');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-const db = mysql.createConnection({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || 'root',
-    database: process.env.DB_NAME || 'reviewlens_db',
-    port: process.env.DB_PORT || 3305
-});
-
-
-
-db.connect((err) => {
-    if (err) {
-        console.error('Database connection failed:', err);
-        return;
-    }
-    console.log('Connected to MySQL database');
-});
-
-
 
 // Register new user
 app.post('/api/auth/register', (req, res) => {
